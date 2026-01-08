@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* =================================================
+       カスタムプロパティ（CSS変数）
+       ================================================= */
+    :root {
+      --twitter-blue: #1DA1F2;
+      --twitter-blue-dark: #1a91da;
+      --discord-blurple: #5865F2;
+      --notion-black: #000000;
+      --bg-color: #f7f9fa;
+      --card-bg: #ffffff;
+      --text-primary: #14171a;
+      --text-secondary: #657786;
+      --border-color: #e1e8ed;
+      --success: #17bf63;
+      --error: #e0245e;
+      --warning: #ffad1f;
+      --code-bg: #f4f5f7;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* =================================================
+       基本スタイル
+       ================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* =================================================
+       レイアウト
+       ================================================= */
+    .help-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    /* =================================================
+       ヘッダー
+       ================================================= */
+    .help-header {
+      background: linear-gradient(135deg, var(--twitter-blue), var(--discord-blurple));
+      color: white;
+      padding: 20px 24px;
+      flex-shrink: 0;
+    }
+
+    .help-header h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .help-header p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    /* =================================================
+       タブナビゲーション
+       ================================================= */
+    .tab-nav {
+      display: flex;
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      flex-shrink: 0;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      padding: 12px 14px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(0,0,0,0.02);
+    }
+
+    .tab-btn.active {
+      color: var(--twitter-blue);
+      border-bottom-color: var(--twitter-blue);
+    }
+
+    /* =================================================
+       タブコンテンツ
+       ================================================= */
+    .tab-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 24px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* =================================================
+       セクション
+       ================================================= */
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+
+    /* =================================================
+       リスト
+       ================================================= */
+    ol, ul {
+      margin-left: 20px;
+      margin-bottom: 12px;
+      color: var(--text-secondary);
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    /* =================================================
+       カード
+       ================================================= */
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .card-title {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+    }
+
+    /* =================================================
+       コードブロック
+       ================================================= */
+    code {
+      background: var(--code-bg);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+      font-size: 12px;
+      color: #e83e8c;
+    }
+
+    pre {
+      background: var(--code-bg);
+      padding: 12px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 12px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: var(--text-primary);
+    }
+
+    /* =================================================
+       テーブル
+       ================================================= */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: var(--code-bg);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    td {
+      color: var(--text-secondary);
+    }
+
+    /* =================================================
+       バッジ
+       ================================================= */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .badge-required {
+      background: rgba(224, 36, 94, 0.1);
+      color: var(--error);
+    }
+
+    .badge-optional {
+      background: rgba(23, 191, 99, 0.1);
+      color: var(--success);
+    }
+
+    .badge-new {
+      background: rgba(29, 161, 242, 0.1);
+      color: var(--twitter-blue);
+    }
+
+    /* =================================================
+       アラートボックス
+       ================================================= */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+
+    .alert-info {
+      background: rgba(29, 161, 242, 0.1);
+      border-left: 4px solid var(--twitter-blue);
+      color: var(--twitter-blue-dark);
+    }
+
+    .alert-warning {
+      background: rgba(255, 173, 31, 0.1);
+      border-left: 4px solid var(--warning);
+      color: #b38600;
+    }
+
+    .alert-success {
+      background: rgba(23, 191, 99, 0.1);
+      border-left: 4px solid var(--success);
+      color: #0e8a3e;
+    }
+
+    .alert-danger {
+      background: rgba(224, 36, 94, 0.1);
+      border-left: 4px solid var(--error);
+      color: var(--error);
+    }
+
+    /* =================================================
+       リンク
+       ================================================= */
+    a {
+      color: var(--twitter-blue);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* =================================================
+       閉じるボタン
+       ================================================= */
+    .close-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background: var(--twitter-blue);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(29, 161, 242, 0.4);
+      transition: all 0.2s ease;
+    }
+
+    .close-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(29, 161, 242, 0.5);
+    }
+
+    /* =================================================
+       ステップ
+       ================================================= */
+    .step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      background: var(--twitter-blue);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+
+    .step-desc {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="help-container">
+    <!-- ヘッダー -->
+    <div class="help-header">
+      <h1>📚 Twitter RSS Collector ヘルプ</h1>
+      <p>セットアップから使い方まで完全ガイド v2.0</p>
+    </div>
+
+    <!-- タブナビゲーション -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('quickstart')">🚀 クイックスタート</button>
+      <button class="tab-btn" onclick="switchTab('sheets')">📊 シート設定</button>
+      <button class="tab-btn" onclick="switchTab('settings')">⚙️ API設定</button>
+      <button class="tab-btn" onclick="switchTab('queries')">🔍 検索クエリ</button>
+      <button class="tab-btn" onclick="switchTab('troubleshooting')">🔧 トラブル</button>
+    </nav>
+
+    <!-- タブコンテンツ -->
+    <div class="tab-content">
+      
+      <!-- クイックスタート -->
+      <div id="quickstart" class="tab-pane active">
+        <div class="section">
+          <h2>🚀 クイックスタートガイド</h2>
+          <p>5分でTwitter RSS + 自動通知を始められます！</p>
+
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <div class="step-title">Composioアカウント作成</div>
+              <div class="step-desc">
+                <a href="https://composio.dev" target="_blank">composio.dev</a> にアクセスし、無料アカウントを作成します。
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <div class="step-title">API Key取得 & Twitter接続</div>
+              <div class="step-desc">
+                ダッシュボードでAPI Keyを作成し、Twitter接続を追加します。
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <div class="step-title">API設定 <span class="badge badge-new">サイドバー</span></div>
+              <div class="step-desc">
+                メニュー「🐦 Twitter RSS」→「⚙️ API設定」から、取得したAPI KeyとConnected Account IDを入力します。
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <div class="step-title">設定シートを初期化 <span class="badge badge-new">NEW</span></div>
+              <div class="step-desc">
+                「📝 設定シートを初期化」で検索条件を管理するシートを作成します。
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <div class="step-title">検索条件を追加</div>
+              <div class="step-desc">
+                設定シートでユーザー名やキーワードを追加します。
+              </div>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">6</div>
+            <div class="step-content">
+              <div class="step-title">トリガー設定（6時間ごと） <span class="badge badge-new">NEW</span></div>
+              <div class="step-desc">
+                「⏰ トリガー設定」で1日4回の自動実行を開始！
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-success">
+            <strong>💡 ヒント：</strong> まずは「▶️ 今すぐ実行」でテストしてから、トリガーを設定しましょう！
+          </div>
+        </div>
+      </div>
+
+      <!-- シート設定 -->
+      <div id="sheets" class="tab-pane">
+        <div class="section">
+          <h2>📊 設定シート・ログシートの使い方</h2>
+
+          <div class="card">
+            <div class="card-title">⚙️ 設定シート <span class="badge badge-new">NEW</span></div>
+            <p>検索条件をスプレッドシートで管理できます。</p>
+            
+            <h3>カラム説明：</h3>
+            <table>
+              <thead>
+                <tr><th>カラム</th><th>説明</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>有効</td><td>チェックで検索ON/OFF</td></tr>
+                <tr><td>検索タイプ</td><td>「ユーザー」または「キーワード」</td></tr>
+                <tr><td>検索値</td><td>ユーザー名 or 検索ワード</td></tr>
+                <tr><td>最大取得件数</td><td>1回あたりの取得数（デフォルト10）</td></tr>
+                <tr><td>Discord通知</td><td>Discordへ通知するか</td></tr>
+                <tr><td>Notion通知</td><td>Notionへ追加するか</td></tr>
+                <tr><td>最終実行</td><td>最後の実行日時（自動）</td></tr>
+                <tr><td>最終取得ID</td><td>重複防止用ID（自動）</td></tr>
+                <tr><td>メモ</td><td>自由に記述可能</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📋 ログシート <span class="badge badge-new">NEW</span></div>
+            <p>実行履歴が自動で記録されます。</p>
+            
+            <h3>記録内容：</h3>
+            <ul>
+              <li>実行日時、検索条件</li>
+              <li>ステータス（✅ 成功 / ❌ エラー）</li>
+              <li>取得件数、新規件数</li>
+              <li>Discord/Notion通知結果</li>
+              <li>エラー内容、処理時間</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">⏰ 6時間トリガー <span class="badge badge-new">NEW</span></div>
+            <p>1日4回（6時間ごと）に自動実行されます。</p>
+            
+            <h3>仕様：</h3>
+            <ul>
+              <li>6時間以内のツイートのみ取得</li>
+              <li>重複は自動で除外（最終取得IDを記録）</li>
+              <li>有効な検索条件のみ実行</li>
+            </ul>
+            
+            <div class="alert alert-warning">
+              <strong>⚠️ 注意：</strong> トリガーは「⏰ トリガー設定」メニューから有効化してください。
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API設定 -->
+      <div id="settings" class="tab-pane">
+        <div class="section">
+          <h2>⚙️ API設定項目の説明</h2>
+
+          <div class="card">
+            <div class="card-title">🔑 Composio API Key <span class="badge badge-required">必須</span></div>
+            <p>ComposioのAPIにアクセスするための認証キーです。</p>
+            <h3>取得方法：</h3>
+            <ol>
+              <li><a href="https://composio.dev" target="_blank">Composio</a>にログイン</li>
+              <li>Settings → API Keys に移動</li>
+              <li>「Create API Key」をクリック</li>
+              <li>生成されたキーをコピー</li>
+            </ol>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🆔 Connected Account ID <span class="badge badge-required">必須</span></div>
+            <p>TwitterとComposioの接続を識別するIDです。</p>
+            <h3>取得方法：</h3>
+            <ol>
+              <li>Composioダッシュボードで「Connected Accounts」を開く</li>
+              <li>Twitterの接続を確認（なければ「Add Connection」で追加）</li>
+              <li>接続のIDをコピー</li>
+            </ol>
+          </div>
+
+          <div class="card">
+            <div class="card-title">💬 Discord Webhook URL <span class="badge badge-optional">任意</span></div>
+            <p>Discord通知を送信するためのWebhook URLです。</p>
+            <h3>取得方法：</h3>
+            <ol>
+              <li>Discordでサーバー設定を開く</li>
+              <li>「連携サービス」→「ウェブフック」</li>
+              <li>「新しいウェブフック」を作成</li>
+              <li>「ウェブフックURLをコピー」</li>
+            </ol>
+          </div>
+
+          <div class="card">
+            <div class="card-title">📝 Notion API Key / Database ID <span class="badge badge-optional">任意</span></div>
+            <p>Notionデータベースに書き込むための設定です。</p>
+            <h3>取得方法：</h3>
+            <ol>
+              <li><a href="https://www.notion.so/my-integrations" target="_blank">Notion Integrations</a>でIntegration作成</li>
+              <li>Internal Integration Tokenをコピー（API Key）</li>
+              <li>NotionページでIntegrationを許可</li>
+              <li>データベースURLからIDを取得</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+      <!-- 検索クエリ -->
+      <div id="queries" class="tab-pane">
+        <div class="section">
+          <h2>🔍 検索タイプと検索値の書き方</h2>
+
+          <div class="card">
+            <div class="card-title">👤 ユーザー検索</div>
+            <p>特定ユーザーのツイートを監視します。</p>
+            <table>
+              <thead>
+                <tr><th>検索値</th><th>生成クエリ</th><th>説明</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>openai</td><td>from:openai</td><td>OpenAI公式</td></tr>
+                <tr><td>@elonmusk</td><td>from:elonmusk</td><td>@は自動除去</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🔍 キーワード検索</div>
+            <p>キーワードでツイートを検索します。</p>
+            <table>
+              <thead>
+                <tr><th>検索値</th><th>説明</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>AI 人工知能</td><td>AND検索（両方含む）</td></tr>
+                <tr><td>AI OR 機械学習</td><td>OR検索（どちらか）</td></tr>
+                <tr><td>#ChatGPT</td><td>ハッシュタグ</td></tr>
+                <tr><td>AI lang:ja</td><td>日本語のみ</td></tr>
+                <tr><td>AI -広告 -PR</td><td>除外キーワード</td></tr>
+                <tr><td>AI min_retweets:100</td><td>最小RT数</td></tr>
+                <tr><td>AI filter:images</td><td>画像付きのみ</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="alert alert-info">
+            <strong>📌 組み合わせ例：</strong><br>
+            <code>AI OR ChatGPT lang:ja -RT</code><br>
+            → AIまたはChatGPTを含む日本語ツイート（リツイート除く）
+          </div>
+        </div>
+      </div>
+
+      <!-- トラブルシューティング -->
+      <div id="troubleshooting" class="tab-pane">
+        <div class="section">
+          <h2>🔧 トラブルシューティング</h2>
+
+          <div class="card">
+            <div class="card-title">❌ 401 Unauthorized エラー</div>
+            <p><strong>原因：</strong> API Keyが間違っているか無効です。</p>
+            <p><strong>対処：</strong></p>
+            <ul>
+              <li>API Keyが正しくコピーされているか確認</li>
+              <li>Composioダッシュボードでキーが有効か確認</li>
+              <li>新しいキーを再生成してみる</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">❌ 検索結果が0件</div>
+            <p><strong>原因：</strong> 検索条件に一致するツイートがないか、6時間以内にない。</p>
+            <p><strong>対処：</strong></p>
+            <ul>
+              <li>検索値が正しいか確認</li>
+              <li>活発にツイートしているユーザーを追加</li>
+              <li>キーワードを広げてみる</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">❌ トリガーが動かない</div>
+            <p><strong>原因：</strong> トリガーが設定されていない、または権限不足。</p>
+            <p><strong>対処：</strong></p>
+            <ul>
+              <li>「⏰ トリガー設定」を再実行</li>
+              <li>GASエディタの「トリガー」で確認</li>
+              <li>ログシートでエラーを確認</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-title">❌ Discord/Notion通知が届かない</div>
+            <p><strong>原因：</strong> Webhook URLやAPI Key、Database IDが無効。</p>
+            <p><strong>対処：</strong></p>
+            <ul>
+              <li>「📤 通知テスト」で個別にテスト</li>
+              <li>設定シートでチェックボックスがONか確認</li>
+              <li>ログシートでエラー内容を確認</li>
+            </ul>
+          </div>
+
+          <div class="alert alert-info">
+            <strong>💡 デバッグのコツ：</strong>
+            ログシートに実行結果とエラーが記録されます。まずはログシートを確認！
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 閉じるボタン -->
+  <button class="close-btn" onclick="google.script.host.close()">✕ 閉じる</button>
+
+  <script>
+    // タブ切り替え
+    function switchTab(tabId) {
+      // すべてのタブボタンからactiveを削除
+      document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      
+      // すべてのタブペインからactiveを削除
+      document.querySelectorAll('.tab-pane').forEach(function(pane) {
+        pane.classList.remove('active');
+      });
+      
+      // 選択したタブをactive化
+      event.target.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    /* =================================================
+       カスタムプロパティ（CSS変数）
+       ================================================= */
+    :root {
+      --twitter-blue: #1DA1F2;
+      --twitter-blue-dark: #1a91da;
+      --discord-blurple: #5865F2;
+      --notion-black: #000000;
+      --bg-color: #f7f9fa;
+      --card-bg: #ffffff;
+      --text-primary: #14171a;
+      --text-secondary: #657786;
+      --border-color: #e1e8ed;
+      --success: #17bf63;
+      --error: #e0245e;
+      --warning: #ffad1f;
+      --input-bg: #ffffff;
+      --input-border: #ccd6dd;
+      --input-focus: #1DA1F2;
+      --shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* =================================================
+       基本スタイル
+       ================================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* =================================================
+       コンテナ
+       ================================================= */
+    .container {
+      padding: 16px;
+    }
+
+    /* =================================================
+       ヘッダー
+       ================================================= */
+    .header {
+      background: linear-gradient(135deg, var(--twitter-blue), var(--discord-blurple));
+      color: white;
+      padding: 20px 16px;
+      margin: -16px -16px 16px -16px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* =================================================
+       セクション
+       ================================================= */
+    .section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .section-title .icon {
+      font-size: 16px;
+    }
+
+    /* =================================================
+       フォーム要素
+       ================================================= */
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 40px 10px 12px;
+      border: 2px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 13px;
+      background: var(--input-bg);
+      color: var(--text-primary);
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px rgba(29, 161, 242, 0.2);
+    }
+
+    input[type="text"]::placeholder,
+    input[type="password"]::placeholder {
+      color: var(--text-secondary);
+    }
+
+    /* =================================================
+       目玉アイコンボタン（表示/非表示切り替え）
+       ================================================= */
+    .toggle-visibility-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .toggle-visibility-btn:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-primary);
+    }
+
+    .toggle-visibility-btn svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .toggle-visibility-btn .eye-open {
+      display: block;
+    }
+
+    .toggle-visibility-btn .eye-closed {
+      display: none;
+    }
+
+    .toggle-visibility-btn.visible .eye-open {
+      display: none;
+    }
+
+    .toggle-visibility-btn.visible .eye-closed {
+      display: block;
+    }
+
+    /* =================================================
+       ボタン
+       ================================================= */
+    .btn {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--twitter-blue), var(--twitter-blue-dark));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(29, 161, 242, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--bg-color);
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* =================================================
+       ステータスメッセージ
+       ================================================= */
+    .status {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .status.success {
+      background: rgba(23, 191, 99, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(23, 191, 99, 0.3);
+      display: block;
+    }
+
+    .status.error {
+      background: rgba(224, 36, 94, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(224, 36, 94, 0.3);
+      display: block;
+    }
+
+    /* =================================================
+       ローディング
+       ================================================= */
+    .loading {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* =================================================
+       インフォボックス
+       ================================================= */
+    .info-box {
+      background: rgba(29, 161, 242, 0.1);
+      border: 1px solid rgba(29, 161, 242, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      color: var(--twitter-blue);
+      margin-top: 16px;
+    }
+
+    .info-box a {
+      color: var(--twitter-blue);
+      text-decoration: underline;
+    }
+
+    /* =================================================
+       ディバイダー
+       ================================================= */
+    .divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 16px 0;
+    }
+
+    /* =================================================
+       フッター
+       ================================================= */
+    .footer {
+      text-align: center;
+      padding: 16px;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <div class="header">
+      <h1>🐦 Twitter RSS 設定</h1>
+      <p>API キーと通知設定を管理</p>
+    </div>
+
+    <!-- COMPOSIO設定 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">🔑</span>
+        COMPOSIO設定（必須）
+      </div>
+
+      <div class="form-group">
+        <label for="composioApiKey">Composio API Key</label>
+        <div class="input-wrapper">
+          <input type="password" id="composioApiKey" placeholder="●●●●●●●●●●●●●●●●">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('composioApiKey', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="connectedAccountId">Connected Account ID</label>
+        <div class="input-wrapper">
+          <input type="password" id="connectedAccountId" placeholder="ca_●●●●●●●●●●●●●●●●">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('connectedAccountId', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="entityId">Entity ID（User ID）</label>
+        <div class="input-wrapper">
+          <input type="password" id="entityId" placeholder="pg-●●●●●●●●●●●●●●●●">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('entityId', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DISCORD設定 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">💬</span>
+        DISCORD設定（任意）
+      </div>
+      
+      <div class="form-group">
+        <label for="discordWebhookUrl">Discord Webhook URL</label>
+        <div class="input-wrapper">
+          <input type="password" id="discordWebhookUrl" placeholder="●●●●●●●●●●●●●●●●">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('discordWebhookUrl', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTION設定 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">📝</span>
+        NOTION設定（任意）
+      </div>
+
+      <div class="form-group">
+        <label for="notionApiKey">Notion API Key</label>
+        <div class="input-wrapper">
+          <input type="password" id="notionApiKey" placeholder="●●●●●●●●●●●●●●●●">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('notionApiKey', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notionDatabaseId">Notion Database ID</label>
+        <div class="input-wrapper">
+          <input type="password" id="notionDatabaseId" placeholder="●●●●●●●●●●●●●●●●">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('notionDatabaseId', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NOTIONデータベース作成（任意） -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">🗄️</span>
+        NOTIONデータベース作成（任意）
+      </div>
+
+      <div class="form-group">
+        <label for="notionParentPageId">Parent Page ID</label>
+        <div class="input-wrapper">
+          <input type="text" id="notionParentPageId" placeholder="作成先ページID">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notionIntegrationKey">Integration Key (API Key)</label>
+        <div class="input-wrapper">
+          <input type="password" id="notionIntegrationKey" placeholder="インテグレーションキー">
+          <button type="button" class="toggle-visibility-btn" onclick="toggleVisibility('notionIntegrationKey', this)">
+            <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="createNotionDatabase()">
+        <span>🗄️</span>
+        データベースを作成
+      </button>
+    </div>
+
+    <!-- 接続テスト -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">🔌</span>
+        接続テスト
+      </div>
+
+      <button class="btn btn-secondary" onclick="testComposio()">
+        <span>🔑</span>
+        Composio接続テスト
+      </button>
+
+      <button class="btn btn-secondary" onclick="testDiscord()" style="margin-top: 8px;">
+        <span>💬</span>
+        Discord接続テスト
+      </button>
+
+      <button class="btn btn-secondary" onclick="testNotion()" style="margin-top: 8px;">
+        <span>📝</span>
+        Notion接続テスト
+      </button>
+
+      <div id="testStatus" class="status"></div>
+    </div>
+
+    <!-- クイック実行 -->
+    <div class="section">
+      <div class="section-title">
+        <span class="icon">⚡</span>
+        クイック実行
+      </div>
+
+      <button class="btn btn-primary" onclick="runSearch24h()" style="background: linear-gradient(135deg, #17bf63, #1DA1F2);">
+        <span>🔍</span>
+        24時間以内を検索
+      </button>
+
+      <button class="btn btn-secondary" onclick="checkTriggerStatus()" style="margin-top: 8px;">
+        <span>⏰</span>
+        トリガー状態を確認
+      </button>
+      
+      <div id="quickStatus" class="status"></div>
+    </div>
+
+    <!-- ボタン -->
+    <button class="btn btn-primary" id="saveBtn" onclick="saveSettings()">
+      <span>💾</span>
+      保存する
+    </button>
+
+    <button class="btn btn-secondary" onclick="resetSettings()">
+      <span>🔄</span>
+      設定をリセット
+    </button>
+
+    <!-- ステータスメッセージ -->
+    <div id="status" class="status"></div>
+
+    <!-- インフォボックス -->
+    <div class="info-box">
+      💡 <strong>ヒント:</strong> API Keyの取得方法はメニューの「❓ ヘルプ」をご確認ください。
+    </div>
+
+    <!-- フッター -->
+    <div class="footer">
+      Twitter RSS Collector v1.0
+    </div>
+  </div>
+
+  <script>
+    // =================================================
+    // 初期化
+    // =================================================
+    
+    // ページ読み込み時に設定を取得
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSettings();
+    });
+
+    // =================================================
+    // 設定の読み込み
+    // =================================================
+    
+    function loadSettings() {
+      google.script.run
+        .withSuccessHandler(function(settings) {
+          document.getElementById('composioApiKey').value = settings.composioApiKey || '';
+          document.getElementById('connectedAccountId').value = settings.connectedAccountId || '';
+          document.getElementById('entityId').value = settings.entityId || '';
+          document.getElementById('discordWebhookUrl').value = settings.discordWebhookUrl || '';
+          document.getElementById('notionApiKey').value = settings.notionApiKey || '';
+          document.getElementById('notionDatabaseId').value = settings.notionDatabaseId || '';
+          document.getElementById('notionParentPageId').value = settings.notionParentPageId || '';
+          document.getElementById('notionIntegrationKey').value = settings.notionIntegrationKey || '';
+        })
+        .withFailureHandler(function(error) {
+          showStatus('error', '❌ 設定の読み込みに失敗しました: ' + error.message);
+        })
+        .getSettings();
+    }
+
+    // =================================================
+    // 設定の保存
+    // =================================================
+    
+    function saveSettings() {
+      const saveBtn = document.getElementById('saveBtn');
+      const originalContent = saveBtn.innerHTML;
+      
+      // ボタンをローディング状態に
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="loading"></span> 保存中...';
+      
+      const settings = {
+        composioApiKey: document.getElementById('composioApiKey').value,
+        connectedAccountId: document.getElementById('connectedAccountId').value,
+        entityId: document.getElementById('entityId').value,
+        discordWebhookUrl: document.getElementById('discordWebhookUrl').value,
+        notionApiKey: document.getElementById('notionApiKey').value,
+        notionDatabaseId: document.getElementById('notionDatabaseId').value,
+        notionParentPageId: document.getElementById('notionParentPageId').value,
+        notionIntegrationKey: document.getElementById('notionIntegrationKey').value
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalContent;
+          
+          if (result.success) {
+            showStatus('success', result.message);
+          } else {
+            showStatus('error', result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = originalContent;
+          showStatus('error', '❌ 保存に失敗しました: ' + error.message);
+        })
+        .saveSettings(settings);
+    }
+
+    // =================================================
+    // 設定のリセット
+    // =================================================
+    
+    function resetSettings() {
+      if (!confirm('本当に設定をリセットしますか？\nすべてのAPI Keyが削除されます。')) {
+        return;
+      }
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            // フォームをクリア
+            document.getElementById('composioApiKey').value = '';
+            document.getElementById('connectedAccountId').value = '';
+            document.getElementById('entityId').value = '';
+            document.getElementById('discordWebhookUrl').value = '';
+            document.getElementById('notionApiKey').value = '';
+            document.getElementById('notionDatabaseId').value = '';
+            document.getElementById('notionParentPageId').value = '';
+            document.getElementById('notionIntegrationKey').value = '';
+            
+            showStatus('success', result.message);
+          } else {
+            showStatus('error', result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showStatus('error', '❌ リセットに失敗しました: ' + error.message);
+        })
+        .resetSettings();
+    }
+
+    // =================================================
+    // 表示/非表示切り替え（目玉アイコン）
+    // =================================================
+    
+    function toggleVisibility(inputId, button) {
+      const input = document.getElementById(inputId);
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.classList.add('visible');
+      } else {
+        input.type = 'password';
+        button.classList.remove('visible');
+      }
+    }
+
+    // =================================================
+    // ステータスメッセージ表示
+    // =================================================
+    
+    function showStatus(type, message) {
+      const statusEl = document.getElementById('status');
+      statusEl.className = 'status ' + type;
+      statusEl.textContent = message;
+
+      // 5秒後に自動で非表示
+      setTimeout(function() {
+        statusEl.className = 'status';
+      }, 5000);
+    }
+
+    // =================================================
+    // NOTIONデータベース作成
+    // =================================================
+
+    function createNotionDatabase() {
+      const parentPageId = document.getElementById('notionParentPageId').value;
+      const integrationKey = document.getElementById('notionIntegrationKey').value;
+
+      if (!parentPageId || !integrationKey) {
+        showStatus('error', '❌ Parent Page IDとIntegration Keyを入力してください');
+        return;
+      }
+
+      showStatus('success', '🔄 データベースを作成中...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            // 作成成功！自動でフィールドに設定
+            document.getElementById('notionDatabaseId').value = result.databaseId;
+            
+            // Integration KeyをNotion API Keyにもコピー
+            document.getElementById('notionApiKey').value = integrationKey;
+            
+            showStatus('success', '🔄 データベース作成完了！設定を自動保存中...');
+            
+            // 自動で保存を実行
+            setTimeout(function() {
+              saveSettingsAfterDbCreate();
+            }, 500);
+          } else {
+            showStatus('error', '❌ 作成失敗: ' + result.error);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showStatus('error', '❌ エラー: ' + error.message);
+        })
+        .createNotionDatabaseFromSidebar(parentPageId, integrationKey);
+    }
+    
+    // データベース作成後の自動保存
+    function saveSettingsAfterDbCreate() {
+      const settings = {
+        composioApiKey: document.getElementById('composioApiKey').value,
+        connectedAccountId: document.getElementById('connectedAccountId').value,
+        entityId: document.getElementById('entityId').value,
+        discordWebhookUrl: document.getElementById('discordWebhookUrl').value,
+        notionApiKey: document.getElementById('notionApiKey').value,
+        notionDatabaseId: document.getElementById('notionDatabaseId').value,
+        notionParentPageId: document.getElementById('notionParentPageId').value,
+        notionIntegrationKey: document.getElementById('notionIntegrationKey').value
+      };
+      
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showStatus('success', '✅ データベース作成＆設定保存完了！\nNotion接続テストで確認できます。');
+          } else {
+            showStatus('error', '❌ 保存失敗: ' + result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showStatus('error', '❌ 保存エラー: ' + error.message);
+        })
+        .saveSettings(settings);
+    }
+
+    // =================================================
+    // 接続テスト
+    // =================================================
+
+    function showTestStatus(type, message) {
+      const statusEl = document.getElementById('testStatus');
+      statusEl.className = 'status ' + type;
+      statusEl.textContent = message;
+
+      setTimeout(function() {
+        statusEl.className = 'status';
+      }, 8000);
+    }
+
+    function testComposio() {
+      showTestStatus('success', '🔄 Composio接続をテスト中...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showTestStatus('success', '✅ Composio: ' + result.message);
+          } else {
+            showTestStatus('error', '❌ Composio: ' + result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showTestStatus('error', '❌ Composio エラー: ' + error.message);
+        })
+        .testComposioConnection();
+    }
+
+    function testDiscord() {
+      showTestStatus('success', '🔄 Discord接続をテスト中...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showTestStatus('success', '✅ Discord: ' + result.message);
+          } else {
+            showTestStatus('error', '❌ Discord: ' + result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showTestStatus('error', '❌ Discord エラー: ' + error.message);
+        })
+        .testDiscordConnection();
+    }
+
+    function testNotion() {
+      showTestStatus('success', '🔄 Notion接続をテスト中...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showTestStatus('success', '✅ Notion: ' + result.message);
+          } else {
+            showTestStatus('error', '❌ Notion: ' + result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showTestStatus('error', '❌ Notion エラー: ' + error.message);
+        })
+        .testNotionConnection();
+    }
+
+    // =================================================
+    // クイック実行
+    // =================================================
+
+    function showQuickStatus(type, message) {
+      const statusEl = document.getElementById('quickStatus');
+      statusEl.className = 'status ' + type;
+      statusEl.textContent = message;
+
+      if (type === 'success' && !message.includes('🔄')) {
+        setTimeout(function() {
+          statusEl.className = 'status';
+        }, 10000);
+      }
+    }
+
+    function runSearch24h() {
+      showQuickStatus('success', '🔄 24時間以内のツイートを検索中...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showQuickStatus('success', '✅ ' + result.message);
+          } else {
+            showQuickStatus('error', '❌ ' + result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showQuickStatus('error', '❌ エラー: ' + error.message);
+        })
+        .runAllSearches24h();
+    }
+
+    function checkTriggerStatus() {
+      showQuickStatus('success', '🔄 トリガー状態を確認中...');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.active) {
+            showQuickStatus('success', result.message);
+          } else {
+            showQuickStatus('error', result.message);
+          }
+        })
+        .withFailureHandler(function(error) {
+          showQuickStatus('error', '❌ エラー: ' + error.message);
+        })
+        .getTriggerStatus();
+    }
+  </script>
+</body>
+</html>
+
