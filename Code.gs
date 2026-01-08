@@ -53,6 +53,9 @@ const SEARCH_TYPES = {
 // デフォルト時間フィルター（時間）- 設定シートで個別に指定可能
 const DEFAULT_HOURS_FILTER = 24;
 
+// Twitter Snowflake Epoch (2010-11-04T01:42:54.657Z)
+const TWITTER_EPOCH = 1288834974657;
+
 // =============================================================================
 // メニュー・UI関数
 // =============================================================================
@@ -592,15 +595,62 @@ function buildSearchQuery(config) {
 }
 
 /**
- * 6時間以内のツイートをフィルタ
+ * Twitter IDから投稿日時を推定
+ * Twitter Snowflake IDから日時を逆算
+ * @param {string} tweetId - Twitter ID
+ * @returns {Date|null} 推定日時
+ */
+function getDateFromTwitterId(tweetId) {
+  try {
+    const id = BigInt(tweetId);
+    const timestamp = Number(id >> BigInt(22)) + TWITTER_EPOCH;
+    return new Date(timestamp);
+  } catch (e) {
+    Logger.log('Twitter ID変換エラー: ' + e.toString());
+    return null;
+  }
+}
+
+/**
+ * ツイートの投稿日時を取得（複数の方法を試す）
+ * @param {Object} tweet - ツイートオブジェクト
+ * @returns {Date} 投稿日時
+ */
+function getTweetDate(tweet) {
+  // 1. created_atフィールドを試す
+  const dateValue = tweet.created_at || tweet.createdAt || tweet.timestamp || tweet.date;
+  if (dateValue) {
+    try {
+      const date = new Date(dateValue);
+      if (!isNaN(date.getTime())) {
+        return date;
+      }
+    } catch (e) {
+      // 変換失敗、次の方法へ
+    }
+  }
+
+  // 2. Twitter IDから推定
+  if (tweet.id) {
+    const estimatedDate = getDateFromTwitterId(tweet.id);
+    if (estimatedDate) {
+      return estimatedDate;
+    }
+  }
+
+  // 3. どちらも失敗した場合は現在時刻
+  return new Date();
+}
+
+/**
+ * 指定時間以内のツイートをフィルタ
  */
 function filterTweetsByTime(tweets, hours) {
   const now = new Date();
   const cutoffTime = new Date(now.getTime() - (hours * 60 * 60 * 1000));
-  
+
   return tweets.filter(tweet => {
-    if (!tweet.created_at) return true; // 日時がない場合は含める
-    const tweetTime = new Date(tweet.created_at);
+    const tweetTime = getTweetDate(tweet);
     return tweetTime >= cutoffTime;
   });
 }
@@ -712,25 +762,14 @@ function sendTweetToDiscord(tweet, config) {
   }
   
   // 投稿日時のフォーマット
-  let postedAt = '-';
-  // 様々な日時フィールドを試す
-  const dateValue = tweet.created_at || tweet.createdAt || tweet.timestamp || tweet.date;
-  if (dateValue) {
-    try {
-      const date = new Date(dateValue);
-      if (!isNaN(date.getTime())) {
-        postedAt = date.toLocaleString('ja-JP', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-      }
-    } catch (e) {
-      postedAt = String(dateValue);
-    }
-  }
+  const tweetDate = getTweetDate(tweet);
+  const postedAt = tweetDate.toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
   
   const embed = {
     author: {
@@ -815,15 +854,36 @@ function callNotionAPI(endpoint, method, payload) {
  */
 function addTweetToNotion(tweet, config) {
   const databaseId = PropertiesService.getScriptProperties().getProperty(PROP_KEYS.NOTION_DATABASE_ID);
-  
+
   if (!databaseId) {
     return { success: false, message: 'Notion Database IDが設定されていません' };
   }
-  
+
   const tweetText = tweet.text || '';
   const tweetTitle = tweetText.substring(0, 100) + (tweetText.length > 100 ? '...' : '');
   const queryLabel = config.searchType + ': ' + config.searchValue;
-  
+
+  // 投稿者名を決定（Discordと同じロジック）
+  const isUserSearch = config.searchType === SEARCH_TYPES.USER;
+  let authorName = '';
+
+  if (isUserSearch) {
+    // ユーザー検索の場合、C列の値（検索値）を使用
+    authorName = config.searchValue.replace('@', '');
+  } else {
+    // キーワード検索の場合、ツイートから取得を試みる
+    const rtMatch = tweetText.match(/^RT @([^:]+):/);
+    if (rtMatch) {
+      authorName = rtMatch[1];
+    } else {
+      authorName = tweet.author_username || tweet.author || tweet.user?.screen_name || 'Unknown';
+    }
+  }
+
+  // 投稿日時を取得（Twitter IDから推定も含む）
+  const tweetDate = getTweetDate(tweet);
+  const createdAt = tweetDate.toISOString();
+
   const payload = {
     parent: { database_id: databaseId },
     properties: {
@@ -831,13 +891,13 @@ function addTweetToNotion(tweet, config) {
         title: [{ text: { content: tweetTitle } }]
       },
       'Author': {
-        rich_text: [{ text: { content: tweet.author_username || tweet.author || 'Unknown' } }]
+        rich_text: [{ text: { content: authorName } }]
       },
       'URL': {
         url: 'https://twitter.com/i/status/' + (tweet.id || '')
       },
       'Created At': {
-        date: { start: tweet.created_at || new Date().toISOString() }
+        date: { start: createdAt }
       },
       'Collected At': {
         date: { start: new Date().toISOString() }
@@ -850,7 +910,7 @@ function addTweetToNotion(tweet, config) {
       }
     }
   };
-  
+
   return callNotionAPI('/pages', 'POST', payload);
 }
 
@@ -899,13 +959,7 @@ function runAllSearches() {
       // ツイートを取得
       let tweets = result.data?.data || result.data?.tweets || result.data || [];
       const fetchedCount = tweets.length;
-      
-      // デバッグ: 最初のツイートの構造をログ出力
-      if (tweets.length > 0) {
-        Logger.log('=== ツイートデータ構造 ===');
-        Logger.log(JSON.stringify(tweets[0], null, 2));
-      }
-      
+
       // 設定された期間以内のツイートをフィルタ（デフォルト24時間）
       const hoursFilter = config.hoursFilter || 24;
       tweets = filterTweetsByTime(tweets, hoursFilter);

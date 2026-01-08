@@ -6,10 +6,11 @@ Google Apps ScriptとComposio APIを使って、Twitter（X）の情報を自動
 
 - 🔍 **柔軟な検索**: ユーザー単位・キーワード単位での検索に対応
 - ⏰ **自動実行**: 6時間ごとの自動検索（設定可能な時間フィルター）
-- 💬 **Discord通知**: リッチなEmbed形式でツイートを通知
-- 📝 **Notion連携**: ツイートを自動的にNotionデータベースに保存
+- 💬 **Discord通知**: リッチなEmbed形式でツイートを通知（投稿者名・投稿日時付き）
+- 📝 **Notion連携**: ツイートを自動的にNotionデータベースに保存（投稿日時をTwitter IDから推定）
 - 🎨 **直感的なUI**: サイドバーから簡単に設定・テスト実行
 - 📊 **詳細なログ**: 実行履歴をスプレッドシートに自動記録
+- 🕐 **投稿日時推定**: Twitter Snowflake IDから正確な投稿日時を自動計算
 
 ## 🚀 セットアップ
 
@@ -155,6 +156,13 @@ Google Apps ScriptとComposio APIを使って、Twitter（X）の情報を自動
 - **解決策**:
   1. Composioダッシュボードで正しいEntity IDを確認
   2. Debug infoの`@user_id`の値を使用（UUIDのみ、プレフィックス不要）
+  3. Entity IDのみで動作するため、Account IDは空欄でも可
+
+### 投稿日時が正しく表示されない
+
+- **原因**: Composio APIが`created_at`フィールドを返していない
+- **解決策**: Twitter Snowflake IDから投稿日時を自動推定（自動対応済み）
+  - Twitter IDには投稿日時が埋め込まれているため、正確な日時を計算できます
 
 ### Notion接続エラー
 
@@ -212,6 +220,32 @@ Discord通知は以下の情報を含むEmbedで送信されます：
 - API Keyやトークンは全て`ScriptProperties`に暗号化して保存
 - サイドバーのパスワードフィールドは目玉アイコンで表示/非表示切り替え可能
 - スクリプトは自分のGoogleアカウント内でのみ実行
+
+## 🆕 最新アップデート
+
+### v2.0 (2026-01-08)
+
+#### 新機能
+- ✨ サイドバーUIの追加（設定・テスト・クイック実行）
+- 🔌 接続テスト機能（Composio/Discord/Notion）
+- 🗄️ Notionデータベース自動作成機能
+- ⚡ 24時間以内クイック検索機能
+- 📝 メモフィールド追加（User ID/X Account ID保存用）
+
+#### 改善
+- 🎨 UI表記の統一（COMPOSIO/DISCORD/NOTION）
+- 🔧 Entity ID対応（Composio API仕様変更に対応）
+- 📊 検索期間を設定可能に（デフォルト24時間）
+- 🎯 ユーザー検索時の投稿者名を検索値（C列）から自動取得
+- 🕐 Twitter Snowflake IDから投稿日時を自動推定
+- 🔒 Account ID/Entity IDをパスワードフィールドに変更
+
+#### 修正
+- 🐛 Composio API呼び出しでEntity IDを追加
+- 🐛 Notion Page ID正規化処理の追加
+- 🐛 Twitter ID比較をBigIntで実装（数値の大小比較対応）
+- 🐛 Discord Embed形式の改善（投稿者名・日時フォーマット）
+- 🐛 投稿日時取得の多段階フォールバック実装
 
 ## 📝 ライセンス
 
